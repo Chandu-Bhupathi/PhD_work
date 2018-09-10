@@ -1,0 +1,400 @@
+
+/* SAS dataset for Simulated data Example 1 */
+
+data Example1;
+input Category $1-18 SubjID $20-23 Pair $25-26 AUCinf 28-34 AUClast 36-42 Cmax 44-50;
+datalines;                                                                                                                        
+Healthy_Volunteers HV01 P4  44.261 29.2029 0.92960
+Healthy_Volunteers HV02 P3  42.818 28.1065 0.78427
+Healthy_Volunteers HV03 P8  57.690 37.9198 1.05700
+Healthy_Volunteers HV04 P1  82.689 55.0219 1.37743
+Healthy_Volunteers HV05 P5  49.769 32.6558 0.86457
+Healthy_Volunteers HV06 P2  69.188 45.9866 1.19153
+Healthy_Volunteers HV07 P7  58.702 38.7268 1.04007
+Healthy_Volunteers HV08 P6  65.769 42.2185 0.75063
+Mild_Patients      Mi01 P5  66.678 43.3318 0.92597
+Mild_Patients      Mi02 P8  98.454 64.0990 1.13940
+Mild_Patients      Mi03 P1  64.046 42.4204 1.02197
+Mild_Patients      Mi04 P4  77.911 51.2740 0.98463
+Mild_Patients      Mi05 P7  40.147 26.0537 0.71593
+Mild_Patients      Mi06 P3  70.712 46.9765 0.89563
+Mild_Patients      Mi07 P6  61.043 39.6156 0.76237
+Mild_Patients      Mi08 P2 110.958 72.2464 0.92923
+;
+run;
+
+/* SAS dataset for Simulated data Example 2 */
+
+data Example2;
+input Category $1-18 SubjID $20-23 Pair $25-26 AUCinf 28-37 AUClast 39-48 Cmax 50-53;
+datalines;                                                                                                                        
+Healthy_Volunteers HV01 P4  54.337755  52.9068   1.99
+Healthy_Volunteers HV02 P3  52.908086  52.202225 1.66
+Healthy_Volunteers HV03 P8  86.467997  84.935475 2.63
+Healthy_Volunteers HV04 P1 109.913654 108.518497 3.16
+Healthy_Volunteers HV05 P5  57.928803  56.665925 1.85
+Healthy_Volunteers HV06 P2  96.522813  94.376685 2.8 
+Healthy_Volunteers HV07 P7  71.395823  69.9065   2.28
+Healthy_Volunteers HV08 P6  95.773583  92.028837 1.78
+Mild_Patients      Mi01 P5  66.160977  63.183575 1.82
+Mild_Patients      Mi02 P8 128.503074 124.208962 2.36
+Mild_Patients      Mi03 P1  74.754963  73.587779 2.13
+Mild_Patients      Mi04 P4 117.877885 115.806419 2.4 
+Mild_Patients      Mi05 P7  53.655752  52.001487 1.56
+Mild_Patients      Mi06 P3 102.002469 100.8475   2.11
+Mild_Patients      Mi07 P6  73.203615  69.565887 1.65
+Mild_Patients      Mi08 P2 197.174711 192.994181 2.53
+;
+run;
+
+*---------------------------------------------------------------------------------------;
+*--- Start of Macro to get the MIXED model results from two models ---;
+*---------------------------------------------------------------------------------------;
+
+
+%macro Model_Comp(In_ds= , OUT_DS=, PKPM=);
+%*- Get the LOG data -;
+data &out_ds;
+    set &In_ds;
+    if &PKPM > 0 then Ln_Value = log(&PKPM);
+run;
+
+%*- Sort the data -;
+proc sort data=&out_ds;
+    by Category SubjID;
+run;
+
+%*- Model Original: Paired data -;
+proc mixed data=&out_ds; 
+    CLASS SubjID Pair Category;
+    MODEL Ln_Value = Category / ddfm=kr outpred =RES_&out_ds._p;
+    RANDOM Pair;
+
+    ESTIMATE "Mild vs HV" Category  -1 1 /cl alpha=0.10 e;
+    LSMEANS Category / alpha=0.1;
+
+    %* statistics output datasets.;
+    ODS OUTPUT estimates = EST_&out_ds._p
+	           lsmeans = LSM_&out_ds._p;
+run;
+
+%*- Model Optional: Grouped data -;
+proc mixed data=&out_ds; 
+    CLASS SubjID Category;
+    MODEL Ln_Value = Category / ddfm=kr outpred =RES_&out_ds._g;
+
+    ESTIMATE "Mild vs HV" Category  -1 1 /cl alpha=0.10 e;
+    LSMEANS Category / alpha=0.1;
+
+    %* statistics output datasets.;
+    ODS OUTPUT estimates = EST_&out_ds._g
+	           lsmeans = LSM_&out_ds._g;
+run;
+%mend;
+
+*---------------------------------------------------------------------------------------;
+*--- End of Macro to get the MIXED model results from two models ---;
+*---------------------------------------------------------------------------------------;
+
+%Model_Comp(In_ds=Example1, OUT_DS=D11_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example1, OUT_DS=D12_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example1, OUT_DS=D13_Cmax,    PKPM=Cmax);
+
+%Model_Comp(In_ds=Example2, OUT_DS=D21_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example2, OUT_DS=D22_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example2, OUT_DS=D23_Cmax,    PKPM=Cmax);
+
+*---------------------------------------------------------------------------------------;
+*---------------------------------------------------------------------------------------;
+
+*- One subject less -;
+
+data Example11; set Example1; where SubjID ne 'HV01'; run;
+data Example12; set Example1; where SubjID ne 'HV02'; run;
+data Example13; set Example1; where SubjID ne 'HV03'; run;
+data Example14; set Example1; where SubjID ne 'HV04'; run;
+data Example15; set Example1; where SubjID ne 'HV05'; run;
+data Example16; set Example1; where SubjID ne 'HV06'; run;
+data Example17; set Example1; where SubjID ne 'HV07'; run;
+data Example18; set Example1; where SubjID ne 'HV08'; run;
+
+
+%Model_Comp(In_ds=Example11, OUT_DS=D11_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example12, OUT_DS=D12_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example13, OUT_DS=D13_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example14, OUT_DS=D14_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example15, OUT_DS=D15_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example16, OUT_DS=D16_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example17, OUT_DS=D17_AUCf,  PKPM=AUCinf);
+%Model_Comp(In_ds=Example18, OUT_DS=D18_AUCf,  PKPM=AUCinf);
+
+%Model_Comp(In_ds=Example11, OUT_DS=D11_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example12, OUT_DS=D12_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example13, OUT_DS=D13_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example14, OUT_DS=D14_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example15, OUT_DS=D15_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example16, OUT_DS=D16_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example17, OUT_DS=D17_AUClt, PKPM=AUClast);
+%Model_Comp(In_ds=Example18, OUT_DS=D18_AUClt, PKPM=AUClast);
+
+%Model_Comp(In_ds=Example11, OUT_DS=D11_Cmax,    PKPM=Cmax);
+%Model_Comp(In_ds=Example12, OUT_DS=D12_Cmax,    PKPM=Cmax);
+%Model_Comp(In_ds=Example13, OUT_DS=D13_Cmax,    PKPM=Cmax);
+%Model_Comp(In_ds=Example14, OUT_DS=D14_Cmax,    PKPM=Cmax);
+%Model_Comp(In_ds=Example15, OUT_DS=D15_Cmax,    PKPM=Cmax);
+%Model_Comp(In_ds=Example16, OUT_DS=D16_Cmax,    PKPM=Cmax);
+%Model_Comp(In_ds=Example17, OUT_DS=D17_Cmax,    PKPM=Cmax);
+%Model_Comp(In_ds=Example18, OUT_DS=D18_Cmax,    PKPM=Cmax);
+
+*---------------------------------------------------------------------------------------;
+*---------------------------------------------------------------------------------------;
+*- TWO subjects less -;
+*- Select randomly 6 HV out of 8 HV -;
+proc surveyselect data=Example1(where=(Category='Healthy_Volunteers'))
+    method = srs sampsize=6 rep=56 seed=2129 out=HV_2less; 
+run;
+
+
+%macro Model_Comp_out(In_ds= , OUT_DS=, PKPM=);
+%*- Get the LOG data -;
+data &out_ds;
+    set &In_ds;
+    if &PKPM > 0 then Ln_Value = log(&PKPM);
+run;
+
+%*- Sort the data -;
+proc sort data=&out_ds;
+    by Category SubjID;
+run;
+
+%*- Model Original: Paired data -;
+proc mixed data=&out_ds; 
+    CLASS SubjID Pair Category;
+    MODEL Ln_Value = Category / ddfm=kr outpred =RES_&out_ds._p;
+    RANDOM Pair;
+
+    ESTIMATE "Mild vs HV" Category  -1 1 /cl alpha=0.10 e;
+    LSMEANS Category / alpha=0.1;
+
+    %* statistics output datasets.;
+    ODS OUTPUT estimates = EST_&out_ds._p
+	           lsmeans = LSM_&out_ds._p;
+run;
+
+%*- Model Optional: Grouped data -;
+proc mixed data=&out_ds; 
+    CLASS SubjID Category;
+    MODEL Ln_Value = Category / ddfm=kr outpred =RES_&out_ds._g;
+
+    ESTIMATE "Mild vs HV" Category  -1 1 /cl alpha=0.10 e;
+    LSMEANS Category / alpha=0.1;
+
+    %* statistics output datasets.;
+    ODS OUTPUT estimates = EST_&out_ds._g
+	           lsmeans = LSM_&out_ds._g;
+run;
+
+%*- Combine data: Residuals -;
+data RES_&out_ds; 
+    Length Simulat Method $6;
+    Simulat = &Rep;
+    set RES_&out_ds._p; 
+	Method = 'Paired';
+	output;
+    set RES_&out_ds._g; 
+	Method = 'Group';
+	output;
+run;
+
+%*- Combine data: Estimates -;
+data EST_&out_ds; 
+    Length Simulat Method $6;
+    Simulat = &Rep;
+    set EST_&out_ds._p; 
+	Method = 'Paired';
+	output;
+    set EST_&out_ds._g; 
+	Method = 'Group';
+	output;
+run;
+
+%*- Combine data: LSMs -;
+data LSM_&out_ds(drop=EFFECT); 
+    Length Simulat Method $6;
+    Simulat = &Rep;
+    set LSM_&out_ds._p; 
+	Method = 'Paired';
+	output;
+    set LSM_&out_ds._g; 
+	Method = 'Group';
+	output;
+run;
+%mend;
+
+
+%macro run_com(_Stt=, _End=, Mdl_in=, Mdl_out=, Mdl_Prm=);
+%do Rep=&_Stt %to &_End;
+
+%*- Combine LESS HV with Original Impaired Patients -;
+data &Mdl_in; 
+    set Example1(where=(Category ne 'Healthy_Volunteers')) HV_2less(where=(Replicate=&Rep)); 
+run;
+
+%Model_Comp_out(In_ds=&Mdl_in, OUT_DS=&Mdl_out,  PKPM=&Mdl_Prm);
+
+%*- Append key info -;
+proc append base=RESIDs data=RES_&Mdl_out; run;
+proc append base=GMRs data=EST_&Mdl_out; run;
+proc append base=LSMs data=LSM_&Mdl_out; run;
+
+%*- Delete intermediate datasets -;
+proc datasets lib=work nolist;
+   delete RES_&Mdl_out._p RES_&Mdl_out._g RES_&Mdl_out 
+          EST_&Mdl_out._p EST_&Mdl_out._g EST_&Mdl_out
+          LSM_&Mdl_out._p LSM_&Mdl_out._g LSM_&Mdl_out;
+quit;
+run;
+%end;
+%mend;
+
+
+%run_com(_Stt=1, _End=56, Mdl_in=Example2L, Mdl_out=D2L_AUCf, Mdl_Prm=AUCinf);
+%run_com(_Stt=1, _End=56, Mdl_in=Example2L, Mdl_out=D2L_AUClt, Mdl_Prm=AUClast);
+%run_com(_Stt=1, _End=56, Mdl_in=Example2L, Mdl_out=D2L_Cmax, Mdl_Prm=Cmax);
+
+
+
+/*SAS CODE for Figure*/
+/*--------------Cmax-------------*/
+proc template;
+define statgraph sgdesign;
+dynamic _SIMULAT _ESTIMATE _METHOD;
+begingraph / designwidth=699 designheight=480;
+   entrytitle halign=center 'Mild (N=8) vs HV (N=6)';
+   layout lattice / rowdatarange=data columndatarange=data rowgutter=10 columngutter=10;
+      layout overlay / xaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on label=('Simulation') discreteopts=( tickvaluefitpolicy=splitrotate)) yaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on label=('Estimated Difference') linearopts=( viewmin=-0.15 viewmax=0.02 tickvaluesequence=( start=-0.15 end=0.02 increment=0.02)));
+         seriesplot x=_SIMULAT y=_ESTIMATE / group=_METHOD name='series' connectorder=xaxis;
+         discretelegend 'series' / opaque=false border=true halign=right valign=top displayclipped=true across=1 order=rowmajor location=inside;
+      endlayout;
+   endlayout;
+endgraph;
+end;
+run;
+
+proc sgrender data=WORK.GMRS template=sgdesign;
+dynamic _SIMULAT="SIMULAT" _ESTIMATE="ESTIMATE" _METHOD="METHOD";
+run;
+
+*-----------------------------------------------------------------------;
+
+proc template;
+define statgraph sgdesign;
+dynamic _SIMULAT _ESTIMATE _METHOD _SIMULAT2 _LOWER _METHOD2 _SIMULAT3 _UPPER _METHOD3;
+begingraph / designwidth=699 designheight=480;
+   entrytitle halign=center 'Mild (N=8) vs HV (N=6)';
+   layout lattice / rowdatarange=data columndatarange=data rowgutter=10 columngutter=10;
+      layout overlay / xaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on label=('Simulation') discreteopts=( tickvaluefitpolicy=splitrotate)) yaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on linearopts=( viewmin=-0.31 viewmax=0.161 tickvaluesequence=( start=-0.31 end=0.161 increment=0.05)));
+         seriesplot x=_SIMULAT y=_ESTIMATE / group=_METHOD name='series' connectorder=xaxis;
+         seriesplot x=_SIMULAT2 y=_LOWER / group=_METHOD2 name='series2' connectorder=xaxis;
+         seriesplot x=_SIMULAT3 y=_UPPER / group=_METHOD3 name='series3' connectorder=xaxis;
+      endlayout;
+   endlayout;
+endgraph;
+end;
+run;
+
+proc sgrender data=WORK.GMRS template=sgdesign;
+dynamic _SIMULAT="SIMULAT" _ESTIMATE="ESTIMATE" _METHOD="METHOD" _SIMULAT2="SIMULAT" _LOWER="LOWER" _METHOD2="METHOD" _SIMULAT3="SIMULAT" _UPPER="UPPER" _METHOD3="METHOD";
+run;
+
+*----------------DDFM=RES (AUCinf)--------------------------;
+
+proc template;
+define statgraph sgdesign;
+dynamic _SIMULAT _ESTIMATE _METHOD _SIMULAT2 _LOWER _METHOD2 _SIMULAT3 _UPPER _METHOD3;
+begingraph / designwidth=995 designheight=480;
+   entrytitle halign=center 'Mild (N=8) vs HV (N=6)';
+   layout lattice / rowdatarange=data columndatarange=data rowgutter=10 columngutter=10;
+      layout overlay / xaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on label=('Simulation') discreteopts=( tickvaluefitpolicy=splitrotate)) yaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on linearopts=( viewmin=-0.2 viewmax=0.6 minorgrid=OFF minorticks=OFF tickvaluesequence=( start=-0.2 end=0.6 increment=0.05)));
+         seriesplot x=_SIMULAT y=_ESTIMATE / group=_METHOD name='series' connectorder=xaxis;
+         seriesplot x=_SIMULAT2 y=_LOWER / group=_METHOD2 name='series2' connectorder=xaxis;
+         seriesplot x=_SIMULAT3 y=_UPPER / group=_METHOD3 name='series3' connectorder=xaxis;
+      endlayout;
+   endlayout;
+endgraph;
+end;
+run;
+
+proc sgrender data=WORK.GMRS_RES template=sgdesign;
+dynamic _SIMULAT="SIMULAT" _ESTIMATE="ESTIMATE" _METHOD="METHOD" _SIMULAT2="SIMULAT" _LOWER="LOWER" _METHOD2="METHOD" _SIMULAT3="SIMULAT" _UPPER="UPPER" _METHOD3="METHOD";
+run;
+
+*---Log Scale;
+
+proc template;
+define statgraph sgdesign;
+dynamic _SIMULAT _GMR _METHOD _SIMULAT2 _GMR_L _METHOD2 _SIMULAT3 _GMR_U _METHOD3;
+begingraph / designwidth=976 designheight=470 dataskin=none;
+   entrytitle halign=center 'AUCinf: Mild (N=8) vs HV (N=6)';
+   layout lattice / rowdatarange=data columndatarange=data rowgutter=10 columngutter=10;
+      layout overlay / xaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on label=('Simulation') discreteopts=( tickvaluefitpolicy=splitrotate)) yaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on linearopts=( viewmin=0.85 viewmax=1.75 tickvaluesequence=( start=0.85 end=1.75 increment=0.15)));
+         seriesplot x=_SIMULAT y=_GMR / group=_METHOD name='series' connectorder=xaxis;
+         seriesplot x=_SIMULAT2 y=_GMR_L / group=_METHOD2 name='series2' connectorder=xaxis;
+         seriesplot x=_SIMULAT3 y=_GMR_U / group=_METHOD3 name='series3' connectorder=xaxis;
+      endlayout;
+   endlayout;
+endgraph;
+end;
+run;
+
+proc sgrender data=WORK.GMR_RES template=sgdesign;
+dynamic _SIMULAT="SIMULAT" _GMR="GMR" _METHOD="METHOD" _SIMULAT2="SIMULAT" _GMR_L="'GMR_L'n" _METHOD2="METHOD" _SIMULAT3="SIMULAT" _GMR_U="'GMR_U'n" _METHOD3="METHOD";
+run;
+
+
+*---------------------------------------------------------------------------------------;
+*---------------------------------------------------------------------------------------;
+*- THREE subjects less -;
+*- Select randomly 5 HV out of 8 HV -;
+proc surveyselect data=Example1(where=(Category='Healthy_Volunteers'))
+    method = srs sampsize=5 rep=336 seed=2129 out=HV_3less; 
+run;
+
+%run_com(_Stt=1, _End=336, Mdl_in=Example3L, Mdl_out=D3L_AUCf, Mdl_Prm=AUCinf);
+%run_com(_Stt=1, _End=336, Mdl_in=Example2L, Mdl_out=D2L_AUClt, Mdl_Prm=AUClast);
+%run_com(_Stt=1, _End=336, Mdl_in=Example2L, Mdl_out=D2L_Cmax, Mdl_Prm=Cmax);
+
+
+proc template;
+define statgraph sgdesign;
+dynamic _SIMULAT _ESTIMATE _METHOD;
+begingraph / designwidth=1015 designheight=480;
+   entrytitle halign=center 'Mild (N=8) vs HV (N=5)';
+   layout lattice / rowdatarange=data columndatarange=data rowgutter=10 columngutter=10;
+      layout overlay / xaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on label=('Simulation') discreteopts=( tickvaluefitpolicy=splitrotate)) yaxisopts=( offsetmin=0.01 offsetmax=0.01 griddisplay=on label=('Estimated Difference') linearopts=( viewmin=0.05 viewmax=0.35 minorgrid=OFF minorticks=OFF tickvaluesequence=( start=0.05 end=0.35 increment=0.05)));
+         seriesplot x=_SIMULAT y=_ESTIMATE / group=_METHOD name='series' connectorder=xaxis;
+         discretelegend 'series' / opaque=false border=true halign=right valign=top displayclipped=true across=1 order=rowmajor location=inside;
+      endlayout;
+   endlayout;
+endgraph;
+end;
+run;
+
+proc sgrender data=WORK.GMRS template=sgdesign;
+dynamic _SIMULAT="SIMULAT" _ESTIMATE="ESTIMATE" _METHOD="METHOD";
+run;
+
+
+
+*---------------------------------------------------------------------------------------;
+*---------------------------------------------------------------------------------------;
+*- FOUR subjects less -;
+*- Select randomly 4 HV out of 8 HV -;
+proc surveyselect data=Example1(where=(Category='Healthy_Volunteers'))
+    method = srs sampsize=4 rep=1680 seed=2129 out=HV_4less; 
+run;
+
+%run_com(_Stt=1, _End=336, Mdl_in=Example3L, Mdl_out=D3L_AUCf, Mdl_Prm=AUCinf);
+%run_com(_Stt=1, _End=336, Mdl_in=Example2L, Mdl_out=D2L_AUClt, Mdl_Prm=AUClast);
+%run_com(_Stt=1, _End=336, Mdl_in=Example2L, Mdl_out=D2L_Cmax, Mdl_Prm=Cmax);
+
