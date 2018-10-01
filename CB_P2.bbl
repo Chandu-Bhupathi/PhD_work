@@ -1,0 +1,36 @@
+﻿\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem[{{Stuart EA}(2010)}]{SEA2010}
+\textsc{{Stuart EA}} (2010).
+\newblock \emph{Matching Methods for Causal Inference: A Review and a Look Forward}.
+\newblock Statistical Science, The Institute of Mathematical Statistics, 25(1), 1–21.
+
+\bibitem[{{FDA Guidance for industry}(2003)}]{FDA2003}
+\textsc{{FDA Guidance for industry}} (2003).
+\newblock \emph{Pharmacokinetics in Patients with Impaired Hepatic Function: Study Design, Data Analysis, and Impact on Dosing and Labeling}.
+\newblock Food \& Drug Administration.
+
+\bibitem[{{FDA Guidance for industry}(2010)}]{FDA2010}
+\textsc{{FDA Guidance for industry}} (2010).
+\newblock \emph{Pharmacokinetics in Patients with Impaired Renal Function — Study Design, Data Analysis, and Impact on Dosing and Labeling}.
+\newblock Food \& Drug Administration.
+
+\bibitem[{{Littell RC, Milliken GA, Stroup WW, Wolfinger RD}(2006)}]{SAS2006}
+\textsc{{Littell RC, Milliken GA, Stroup WW, Wolfinger RD}} (2006).
+\newblock \emph{SAS for mixed models (2nd ed.)}.
+\newblock SAS Institute Inc. Cary, NC.
+
+\bibitem[{{McNeish D and Kelly K}(2018)}]{MCD2018}
+\textsc{{McNeish D and Kelly K}} (2018).
+\newblock \emph{Fixed Effects Models Versus Mixed Effects Models for Clustered Data: Reviewing the Approaches, Disentangling the Differences, and Making Recommendations}.
+\newblock Psychological Methods.
+
+\bibitem[{{Urso R, Blardi P, Giorgi G}(2002)}]{URS2002}
+\textsc{{Urso R, Blardi P, Giorgi G}} (2002).
+\newblock \emph{A short introduction to pharmacokinetics}.
+\newblock Eur. Rev. Med. Pharmacol. Sci 6, 33-44.
+
+\end{thebibliography}

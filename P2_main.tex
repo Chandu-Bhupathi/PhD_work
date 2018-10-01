@@ -1,0 +1,348 @@
+% ----------------------------------------------------------------
+% ----------------------------------------------------------------
+% Script for Second Paper "Statistical model differences in impariment trials"
+% Chandu Bhupathi -- Version 1.0 29 Sep 2018
+% ----------------------------------------------------------------
+% ---------------------------------------------------------------- 
+
+\documentclass[final]{statistica}
+\usepackage{graphicx}
+\usepackage[a4paper,left=4.4cm,right=4.4cm]{geometry}
+\usepackage[section]{placeins}
+\usepackage{float}
+\usepackage{psfrag}
+%\usepackage{bigstrut}
+%\usepackage{multirow}
+\usepackage{booktabs, multicol, multirow, caption}
+
+\title[Model differences in organ imparied trials]{Statistical model differences in hepatic and renal impairment trials}
+\author{Bhupathi Chandrasekhar \footnote{Corresponding Author. E-mail: chandu.bhupathi@gmail.com}}
+\email{chandu.bhupathi@gmail.com}
+\address{Department of Statistics, O U Science College, Osmania University, Hyderabad, India.}
+\author[Bhupathi Chandrasekhar and V.V. Haragopal]{Vajjha Venkata HaraGopal}%
+\email{haragopal.vajjha@gmail.com}
+\address{Department of Mathematics, Birla Institute of Technology and Science, Pilani, Hyderabad Campus, Jawahar Nagar, Shameerpet, Hyderabad, India.}
+
+\years{201\#}
+\volumes{\#}
+\anno{LXX\#}
+\citestyle{statistica}
+\begin{document}
+
+\keywords{Hepatic or Renal impairment, Matching, Mixed models, PK parameters}%
+
+% ----------------------------------------------------------------
+\section{Introduction}
+
+Clinical trials on patients with impaired hepatic or renal function are usually performs during the drug development to understand the excretion and metabolism of the drugs. If a drug is eliminated primarily through hepatic or renal excretory mechanisms, impaired hepatic or renal function may alters the drug's pharmacokinetics (PK) to an extent that the dose regimen needs to be changed from that used in patients with normal hepatic or renal function. Thus, assessment of PK in patients with hepatic or renal impairment is must to provide appropriate dosing recommendations.
+\vspace{3mm}
+\par
+As per FDA guidelines [FDA guidance (2003), (2010)], the classification of the impaired hepatic functions based on 'Child-Pugh categorization'; and the classification of the impaired renal functions based on 'Estimated glomerular filtration rate (eGFR)' or 'Estimated Creatinine Clearance (CLcr)'. The classification of these impairment functions in general will be classified into four categories (Mild, Moderate, Sever and Normal) depends on the categorization methods of the respective impaired function. The 'Normal' group is also referring as 'Control' group.
+\vspace{3mm}
+\par
+The primary purpose of conducting impairment study is to determine that the adjustment to the dosage would be indicated in mild, moderate and severe group patients when compare with normal group. In addition, the control group should be representative of a typical patient population with 'Normal' impaired function. To the extent possible, the demographics of control group should be like impaired patients. Depending on the study protocol, the Demographic characteristics can be Age, Sex, Race, Weight and Body Mass Index (BMI). One approach for this selection is the individual matching and the other approach is group level.
+\vspace{3mm}
+\par
+The study design for impairment study is parallel design with AUC (area under curve) and Cmax (peak or maximum concentration) as primary PK parameters for analysis. The PK parameters will be compared between each impaired group (Mild, Moderate and Severe) with the matched Normal (control) group. The log-transformed PK parameters will be analyzed using linear mixed model with impaired groups as fixed effect and demographics as covariates. The demographic characteristics are considered as covariates into the model.
+\vspace{3mm}
+\par
+The term matching in statistics is a technique or method that aims to equate (or 'balance') the distribution of covariates in case and control groups. At high level, matching process can be classified into two types. First one, is {\em Individual level -} matching performed on one to one basis. This is like an impaired patient to the corresponding healthy subject matching. The second one is {\em Group level -} matching performed for group of subjects, not at individual level. The details about matching methods and their usage along with the guidance provided by Stuart [Stuart, 2010]. Based on the matching criterion (Group level or Individual level) of demographics the model will change accordingly.
+\vspace{3mm}
+\par
+Matching is a strategy to remove the bias in the comparison of groups by ensuring the equality of distribution of the matching covariates employed. The objective of this paper is to compare the differences between the two statistical models as per the matching criterion of demographics.
+
+\section{MATERIALS AND METHODS}
+
+As explained in the introduction, the control group should be close representative of impaired patients. Hence, the covariates of control group should be as close as to the impaired patients. This can be at individual level or group level. Now we investigate these two matching criterions their advantages and disadvantages. The common point in both criterions is that the enrollment starts with impaired group patients first. Depending on the protocol, it can be Mild, Moderate or Severe category. In this paper, let us assume that we are comparing one of the impaired groups with the corresponding normal group. In general, there will be safety or PK assessment (preliminary evolution) for the first impaired group patients by comparing with the corresponding normal group. Based on this preliminary evolution, a different amount of dosing may propose to the next impaired group.
+
+\subsubsection{Individual level matching}
+
+In this approach, we do a pair wise matching. Enrollment starts with impairment group patients. The corresponding healthy subject's recruitment will be in pair wise and hence the enrollment starts as soon as the corresponding impaired patient has received the study medication. In general, the healthy subject will match in Gender, Age (x number of years), weight ( x\%) to an individual patient in impairment groups (mild, moderate and severe). The list of demographic covariates and their ranges vary from study to study. 
+\vspace{3mm}
+\par
+Since it is a pair-wise match, the number of subjects in control group is less than or equal to the total number of patients in all impaired groups, but the number of pairs is equivalent to the total number of patients in all impaired groups. Please refer Figure 1 for the pictorial representation of individual level matching.
+
+\FloatBarrier
+\begin{figure}[h]
+	\centering
+	\caption{Subject level matching criteria for impaired patients and the corresponding HVs}\label{p2_fig1}	
+	\includegraphics[width=\linewidth]{p2_fig1.eps}\\
+\end{figure}
+
+The 'pair' plays critical role in this approach for statistical analysis. The pairing is for each impaired patient in the impaired groups with the corresponding matched healthy volunteer, as explained in the Figure 1. So, the impaired group nested in matched pair is consider as RANDOM effect in the statistical analysis. We generally have more healthy volunteers in this approach than compared with the group level matching.
+
+\subsubsection{Group level matching}
+
+In this approach, we do a group level matching. Enrollment starts with impairment group patients. The corresponding healthy subject's recruitment starts only after 50\% or above patients in the impairment category has finished the dosing regimen. The healthy subject matched to at least one impairment patient by Gender, Age (x number of years), weight (x \%). The list of demographic covariates and their ranges vary from study to study.
+\vspace{3mm}
+\par
+Since it is a group level match, the number of subjects in control group can be equivalent to the lowest or highest number of patients in all impaired groups. We need lesser healthy volunteers in this approach than compared with the individual level matching. Please refer Figure 2 for the pictorial representation of group level matching.
+
+\FloatBarrier
+\begin{figure}[h]
+	\centering
+	\caption{Group level matching criteria for impaired patients and the corresponding HVs}\label{p2_fig2}	
+	\includegraphics[width=\linewidth]{p2_fig2.eps}\\
+\end{figure}
+
+\section{Statistical Methodology of Comparison}
+
+The primary purpose of these impairment studies is to develop dosing recommendations of impaired patients by assessing the effect of impairment functions (categories) on the PK of the drug and/or its metabolites. The log transformed PK parameters (AUC and Cmax separately) will be analyzed using one of the below models. Appropriate contrasts will be estimated for each impairment group (mild, moderate and sever) versus control group. The geometric mean ratios and their 90\% CI derived by anti-log transformation of estimates of the differences and their confidence intervals.
+\vspace{3mm}
+\par
+Below, we discuss different possible statistical models, based on the covariates matching criterion and the significance of covariates. We considered only eight patients in each impaired group and the corresponding healthy volunteers as per the matching criterion for the discussion, as explained above. The discussion is limited for the three PK parameter [6] (i.e, AUCinf, AUClast and Cmax), assuming the covariates has no significant effect.
+
+\subsection{Statistical model for Group level matching criterion}
+
+In this approach, we analyze the log transformed PK parameters (AUC and Cmax separately) by means of ANCOVA with impairment group (Mild, Moderate, Severe and Normal) as fixed effect and demographic characteristics (Depending on the study protocol – Age, Sex, Weight, Race and BMI) as covariates if significant. Significant covariates identification through backwards selection at a 5\% level.
+\vspace{3mm}
+\par
+If, the covariates are not significant, then we can use the below ANOVA model directly:
+
+\begin{equation}\label{eq1}
+Y_{ij} = {\mu + \alpha_i + \epsilon_{ij}}
+\end{equation}
+
+Where,
+\par
+$Y_{ij}$ represents the $j^{th}$ observation (j = 1, 2..., nj, n=8) on $i^{th}$ impaired group.
+\par
+$\mu$ is the common effect of all observations
+\par
+$\alpha_i$ is the $i^{th}$ imparied group effect, and 
+\par
+$\epsilon_{ij}$ represents the random error present in the $j^{th}$ observation on $i^{th}$ impaired group.
+\vspace{3mm}
+\par
+If a covariate is significant, let us say here it is Age, and then we need to add this information into the model. With this addition of covariate, the model will be ANCOVA: 
+
+\begin{equation}\label{eq2}
+Y_{ij} = {\mu + \alpha_i + \beta (x_{ij} - \bar{X_i})+ \epsilon_{ij}}
+\end{equation}
+
+Where,
+\par
+$Y_{ij}$, $\mu$, $\alpha_i$ and $\epsilon_{ij}$ represents the same as in ANOVA model;
+\par
+$\beta$ is the regression coefficient, 
+\par
+$x_{ij}$ represents the $j^{th}$ observation of the covariate Age under $i^{th}$ impaired group.
+\par
+$\bar{x_i}$ is the $i^{th}$ impaired group mean.
+
+\subsection{Statistical model for Individual level matching criterion}
+
+In this approach, we analyze the log transformed PK parameters (AUC and Cmax separately) using the linear mixed model with impairment group (Mild, Moderate, Severe and Normal) as fixed effect and \textbf{matched pair} as random effect. The statistical model would be:
+
+\begin{equation}\label{eq3}
+Y_{ijk} = {\mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \epsilon_{ijk}}
+\end{equation}
+
+Where,
+\par
+$Y_{ijk}$ represents the $k^{th}$ observation (k = 1, 2..., nk, n=8) on $i^{th}$ impaired group for $j^{th}$ pair.
+\par
+$\mu$ is the common effect of all observations
+\par
+$\alpha_i$ is the $i^{th}$ imparied group (fixed) effect, 
+\par
+$\beta_j$ is the $j^{th}$ pair (random) effect,
+\par
+$(\alpha\beta)_{ij}$ is the interaction effect between $i^{th}$ imparied group and $j^{th}$ pair,
+\par
+$\epsilon_{ijk}$ represents the random error.
+\vspace{3mm}
+\par
+As the interaction effect doesn’t have significant effect, the model can be written as,
+
+\begin{equation}\label{eq4}
+Y_{ijk} = {\mu + \alpha_i + \beta_j + \epsilon_{ijk}}
+\end{equation}
+
+\vspace{3mm}
+\textbf{Assumptions:}
+\begin{enumerate}
+	\item The population in which samples are drawn should be normally distributed (Plots or Shapiro-Wilk or Kolmogrov-Smirnov tests)
+    \item The samples should be independent of each other
+    \item The variance among the groups should be approximately equal (Levene's test or Brown-Forsythe test)
+\end{enumerate}
+
+\par
+It is important to note that ANOVA is not robust to violations to the assumption of independence. This is to say, that even if you violate the assumptions of homogeneity or normality, you can conduct the test and, trust the findings. However, violations to independence assumption one cannot trust those ANOVA results. In general, with violations of homogeneity the study can probably carry on if you have equal sized groups. With violations of normality, continuing with the ANOVA should be ok if you have a large sample size and equal sized groups.
+\vspace{3mm}
+\par
+Overall, Fixed effects model has lesser assumption when compared with Mixed effects model [5], as the random factors plays very critical role in this. Also, we need bigger sample size to adopt mixed effects model, when compare with the fixed effects model. If the random factor does not play critical role in the model, the recommendation is to adopt the fixed effects model. The total amount of error might be slightly higher in the fixed effect model when compared with the mixed effects model. If the purpose is not to find the covariate estimates, then having slightly higher error should not be a reason to adopt the simpler yet effective model.
+
+\section{RESULTS AND DISCUSSION}
+
+If we observe the above models, in both the cases we are considering the impaired groups as fixed effects; and the additional term 'matched pair' as random effect for subject level matching case.
+\vspace{3mm}
+\par
+Below is the SAS code for these models. There is no much difference in the two codes:
+\vspace{3mm}
+
+\begin{table}
+	\centering
+	\caption{SAS code comparison for both the models}\label{tab1}
+	\begin{tabular}{|l|l|}
+		\hline
+		Subject level & Group level \\
+		\hline
+		PROC MIXED DATA=pkdata; & $<$Same as subject level$>$ \\
+		CLASS SubjID Pair Category; & CLASS SubjID Pair Category; \\
+		MODEL lnPKval = category / DDFM=kr OUTPRED=res; & $<$Same as subject level$>$ \\
+		RANDOM Pair; & RANDOM Pair; \\
+		ESTIMATE “Mild vs HV” category 1 -1 / CL ALPHA=0.10; & $<$Same as subject level$>$ \\
+		LSMEANS category / ALPHA=0.1; & $<$Same as subject level$>$ \\
+		ODS OUTPUT ESTIMATES = est LSMEANS = lsm; & $<$Same as subject level$>$ \\
+		RUN; & $<$Same as subject level$>$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\vspace{3mm}
+\par
+Let us consider the simulated data for eight patients and the corresponding healthy subjects, provided in Table 2. For illustration purpose, only one impairment group (i.e Mild) data and the corresponding healthy volunteer's data has considered. Created two sets of simulated data for three PK parameters (AUCinf, AUClast and Cmax).
+\vspace{3mm}
+
+\FloatBarrier
+\begin{table}
+	\centering
+	\caption{Simulated data for eight patients of mild impaired group and the corresponding healthy subjects}label{tab2}
+	\begin{tabular}{|l|c|c|l|l|l|l|l|l|}
+		\hline
+		Impairment & Subject & Pair & \multicolumn{3}{c|}{Simulated Data Example 1} & \multicolumn{3}{c|}{Simulated Data Example 2} \\
+		\cline{4-9}
+		Category & ID & & AUCinf & AUClast & Cmax & AUCinf & AUClast & Cmax \\
+		& & & (hr*ng/mL) & (hr*ng/mL) & (hng/mL) & (hr*ng/mL) & (hr*ng/mL) & (hng/mL) \\
+		\hline
+		Mild Group & Mi01 & P5 & 66.678 & 43.3318 & 0.92597 & 66.160977 & 63.183575 & 1.82 \\ \hline
+		Mild Group & Mi02 & P8 & 98.454 & 64.0990 & 1.13940 & 128.503074 & 124.208962 & 2.36 \\ \hline
+		Mild Group & Mi03 & P1 & 64.046 & 42.4204 & 1.02197 & 74.754963 & 73.587779 & 2.13 \\ \hline
+		Mild Group & Mi04 & P4 & 77.911 & 51.2740 & 0.98463 & 117.877885 & 115.806419 & 2.4 \\ \hline
+		Mild Group & Mi05 & P7 & 40.147 & 26.0537 & 0.71593 & 53.655752 & 52.001487 & 1.56 \\ \hline
+		Mild Group & Mi06 & P3 & 70.712 & 46.9765 & 0.89563 & 102.002469 & 100.8475 & 2.11 \\ \hline
+		Mild Group & Mi07 & P6 & 61.043 & 39.6156 & 0.76237 & 73.203615 & 69.565887 & 1.65 \\ \hline
+		Mild Group & Mi08 & P2 & 110.958 & 72.2464 & 0.92923 & 197.174711 & 192.994181 & 2.53 \\ \hline
+		HV Group & HV01 & P4 & 44.261 & 29.2029 & 0.92960 & 54.337755 & 52.9068 & 1.99 \\ \hline
+		HV Group & HV02 & P3 & 42.818 & 28.1065 & 0.78427 & 52.908086 & 52.202225 & 1.66 \\ \hline
+		HV Group & HV03 & P8 & 57.690 & 37.9198 & 1.05700 & 86.467997 & 84.935475 & 2.63 \\ \hline
+		HV Group & HV04 & P1 & 82.689 & 55.0219 & 1.37743 & 109.913654 & 108.518497 & 3.16 \\ \hline
+		HV Group & HV05 & P5 & 49.769 & 32.6558 & 0.86457 & 57.928803 & 56.665925 & 1.85 \\ \hline
+		HV Group & HV06 & P2 & 69.188 & 45.9866 & 1.19153 & 96.522813 & 94.376685 & 2.8 \\ \hline
+		HV Group & HV07 & P7 & 58.702 & 38.7268 & 1.04007 & 71.395823 & 69.9065 & 2.28 \\ \hline
+		HV Group & HV08 & P6 & 65.769 & 42.2185 & 0.75063 & 95.773583 & 92.028837 & 1.78 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\vspace{3mm}
+\par
+The mixed model results estimate and the corresponding confidence intervals, for each parameter and statistical model provided below. Results provided in two separate tables for each simulated data example.
+\vspace{3mm}
+\par
+The PK parameter values needs to convert into LOG scale before passing into the statistical model. The back transformed results, from MIXED MODEL, for both the simulated examples are provided in Table 3 and Table 4 respectively.
+\vspace{3mm}
+
+\begin{table}
+	\centering
+	\caption{Results for the simulated data example 1}label{tab3}
+	\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+		\hline
+		PK & \multicolumn{2}{c|}{Adjusted GM*} & GM & \multicolumn{4}{c|}{90\% CI} \\
+		\cline{2-3} \cline{5-8}
+		Parameter & Healthy & Mild & Ratio & \multicolumn{2}{c|}{Lower Limit} & \multicolumn{2}{c|}{Upper Limit} \\ \cline{5-8}
+		(unit) & Volunteer & Impairment & (Mild/HV) & Subject & Group & Subject & Group \\
+		\hline
+        AUCinf & \multirow{2}{*}{57.54113} & \multirow{2}{*}{70.78167} & \multirow{2}{*}{1.230106} & \multirow{2}{*}{0.950393} & \multirow{2}{*}{0.967771} & \multirow{2}{*}{1.592014} & \multirow{2}{*}{1.563458} \\
+        (hr*ng/mL) & & & & & & & \\ \hline
+        AUClast & \multirow{2}{*}{37.84126} & \multirow{2}{*}{46.31195} & \multirow{2}{*}{1.223848} & \multirow{2}{*}{0.945038} & \multirow{2}{*}{0.961655} & \multirow{2}{*}{1.584866} & \multirow{2}{*}{1.557528} \\
+        (hr*ng/mL) & & & & & & & \\ \hline
+        Cmax & \multirow{2}{*}{0.980424} & \multirow{2}{*}{0.912872} & \multirow{2}{*}{0.931099} & \multirow{2}{*}{0.814159} & \multirow{2}{*}{0.793343} & \multirow{2}{*}{1.064867} & \multirow{2}{*}{1.092742} \\
+        (ng/mL) & & & & & & & \\ \hline
+	\end{tabular}
+\end{table}
+
+\vspace{3mm}
+
+\begin{table}
+	\centering
+	\caption{Results for the simulated data example 2}label{tab4}
+	\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+		\hline
+		PK & \multicolumn{2}{c|}{Adjusted GM*} & GM & \multicolumn{4}{c|}{90\% CI} \\
+		\cline{2-3} \cline{5-8}
+		Parameter & Healthy & Mild & Ratio & \multicolumn{2}{c|}{Lower Limit} & \multicolumn{2}{c|}{Upper Limit} \\ \cline{5-8}
+		(unit) & Volunteer & Impairment & (Mild/HV) & Subject & Group & Subject & Group \\
+		\hline
+		AUCinf & \multirow{2}{*}{75.39945} & \multirow{2}{*}{93.65333} & \multirow{2}{*}{1.242096} & \multirow{2}{*}{0.897987} & \multirow{2}{*}{0.902488} & \multirow{2}{*}{1.718067} & \multirow{2}{*}{1.709498} \\
+		(hr*ng/mL) & & & & & & & \\ \hline
+		AUClast & \multirow{2}{*}{73.75878} & \multirow{2}{*}{91.01279} & \multirow{2}{*}{1.233925} & \multirow{2}{*}{0.888963} & \multirow{2}{*}{0.894044} & \multirow{2}{*}{1.713092} & \multirow{2}{*}{1.703355} \\
+		(hr*ng/mL) & & & & & & & \\ \hline
+		Cmax & \multirow{2}{*}{2.213998} & \multirow{2}{*}{2.041531} & \multirow{2}{*}{0.922101} & \multirow{2}{*}{0.790887} & \multirow{2}{*}{0.766899} & \multirow{2}{*}{1.075118} & \multirow{2}{*}{1.108824} \\
+		(ng/mL) & & & & & & & \\ \hline
+	\end{tabular}
+\end{table}
+
+\vspace{3mm}
+\par
+Here, if we notice, we have used equal sample sizes in both the groups, i.e balanced design. We have extended our research further on imbalanced groups. In this approach, we have compared the eight mild patients with randomly selected groups of seven and six subjects respectively. That is, 8 simulations for group of 7 subjects and 56 simulations for group of six subjects. We have limited the experiment to compare the HV groups, which has 20\% lesser sample size than the mild group.
+\vspace{3mm}
+\par
+As we know that there are multiple methods to calculate the denominator degrees of freedom[4], we have also executed the models using \textit{\textbf{residual}} method to calculated denominator degrees of freedom . To differentiate the differences between two DDFM methods, the comparison of back transformed results for the both the models are displayed in the Figure 3 and Figure 4 for groups of seven subjects and six subjects respectively.
+
+\vspace{3mm}
+\FloatBarrier
+\begin{figure}[h]
+	\centering
+	\caption{Comparison of two statistical models with two different DDFM options for AUCinf and Cmax parameters using the simulation data of 8 mild patients and the corresponding 7 subjects}\label{p2_fig3}	
+	\includegraphics[width=\linewidth]{p2_fig3.eps}\\
+\end{figure}
+
+\vspace{3mm}
+
+\FloatBarrier
+\begin{figure}[h]
+	\centering
+	\caption{Comparison of two statistical models with two different DDFM options for AUCinf and Cmax parameters using the simulation data of 8 mild patients and the corresponding 6 subjects}\label{p2_fig4}	
+	\includegraphics[width=\linewidth]{p2_fig4.eps}\\
+\end{figure}
+
+\vspace{3mm}
+
+\section{Concluding Remarks}
+Based on this experimental data, we have the following conclusions to make:
+\vspace{3mm}
+\par
+From the results, there is not much difference in the two models. The adjusted geometric mean ratio (GMR) for the 'Mild vs Healthy volunteers' is same in both the models. However, the confidence intervals are slightly differing in both the models. Also, if we notice the Fit Statistics (AIC, AICC and BIC values), the model without random statement is a better fit over the other model.
+\vspace{3mm}
+\par
+In addition, From Table 3 and Table 4, it is evident that the confidence interval is narrow in the group level for AUCinf and AUClast, while it is wider for Cmax. These two observations conclude that the narrow confidence interval (CI) indicates that a small error, while wider indicates more error.
+\vspace{3mm}
+\par
+From the Figure 3 and Figure 4 it is evident that the denominator of degrees of freedom method has no impact on the GMR. However, there is slight change in the 90\% CI. We can choose the best method of DDFM as per the data.
+\vspace{3mm}
+\par
+From this study we strongly say that any organ (hepatic or renal) impairment study does not required to use matched pair as random factor in the statistical model, when there is only one group of impaired patients need to compare with corresponding Healthy volunteers, as there is no difference in the GMR.
+\vspace{3mm}
+\par
+We will extend our research further to study the multiple group case of Mild, Moderate and Severe versus the HV group to assess the stability of the model along with the reduction of the Healthy volunteers count in these organ impairment trials.
+\vspace{3mm}
+
+\begin{ack}
+Special thanks to my colleagues and friends who provided insights and expertise that greatly assisted the research.
+\end{ack}
+
+\vspace{3mm}
+% ----------------------------------------------------------------
+\bibliographystyle{statistica}
+\nocite{*}
+\bibliography{bibdatabase}
+% ----------------------------------------------------------------
+
+\begin{abstract}
+	Organs such as liver and kidneys are involved in the clearance of many drugs clinically. Alterations of its excretory and metabolic activities by organ impairment can lead to drug accumulation or failure to form an active metabolite by causing changes in absorption, distribution, protein binding, excretion or clearance. Health Authorities have a specific requirement on the study designs. A within-study control group is recommended, and it should be comparable with the organ-impaired subjects with respect to age, race, gender, weight, genetic polymorphisms and other factors with significant potential to alter the pharmacokinetics. Some approaches have been integrated in recent protocols to ensure comparability of the control group with impairment groups, such as a process to ensure inclusion and completion of the trial by an impaired subject before the matching healthy can start the trial. The analysis consists of comparison of each log-transformed PK parameters for all different impairment groups (mild, moderate, severe) to matching healthy volunteers (HV) in one single ANCOVA model, with impairment group as fixed effect and matching parameters as covariates, [Model 1]. Another approach has been used where some trials is to include the individual matching identifier in the model [Model 2] so that the comparison is performed considering paired subjects with matching covariates, as opposed to the Model 1 considering matching covariates at group level. The objective of this paper is to compare the consistency of results between the two approaches and to evaluate the performance of the Models.
+\end{abstract}
+
+\end{document}
+% ----------------------------------------------------------------
